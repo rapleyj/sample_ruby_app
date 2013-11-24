@@ -4,57 +4,61 @@ describe "Static pages" do
 
   let(:base_title) { "Ruby on Rails Tutorial Sample App" }
 
+  subject { page }
+
+  shared_examples_for "all_static_pages" do
+    it { should have_selector('h1', text: heading) }
+    it { should have_title(full_title(page_title)) }
+  end
+
   describe "Home page" do
+    before { visit root_path }
 
-    it "should have the content 'Sample App'" do
-      visit '/static_pages/home'
-      expect(page).to have_content('Sample App')
-    end
+    let(:heading)     { 'Sample App' }
+    let(:page_title)  { '' }
 
-    it "should have the base title" do
-      visit '/static_pages/home'
-      expect(page).to have_title("Ruby on Rails Tutorial Sample App")
-    end
-
-    it "should not have a custom page title" do
-      visit '/static_pages/home'
-      expect(page).not_to have_title('| Home')
-    end
+    it_should_behave_like "all_static_pages"
+    it { should_not have_title('| Home') }
   end
 
   describe "Help page" do
-    it "should have the content 'Help'" do
-      visit '/static_pages/help'
-      expect(page).to have_content('Help')
-    end
+    before { visit help_path }
 
-    it "should have the title 'Help'" do
-      visit '/static_pages/help'
-      expect(page).to have_title("#{base_title}  | Help")
-    end
+    let(:heading)     { 'Help' }
+    let(:page_title)  { 'Help' }
+
+    it_should_behave_like "all_static_pages"
   end
 
   describe "About me" do
-    it "should have the content 'About me'" do
-      visit '/static_pages/about'
-      expect(page).to have_content('About me')
-    end
+    before { visit about_path }
 
-    it "should have the title 'About me'" do
-      visit '/static_pages/about'
-      expect(page).to have_title("#{base_title}  | About me")
-    end
+    let(:heading)     { 'About me' }
+    let(:page_title)  { 'About me' }
+
+    it_should_behave_like "all_static_pages"
   end
 
   describe "Contact" do
-    it "should have the content 'Contact'" do
-      visit '/static_pages/contact'
-      expect(page).to have_content('Contact')
-    end
+    before { visit contact_path }
 
-    it "should have the title 'Contact'" do
-      visit '/static_pages/contact'
-      expect(page).to have_title("#{base_title}  | Contact")
-    end
+    let(:heading)     { 'Contact' }
+    let(:page_title)  { 'Contact' }
+
+    it_should_behave_like "all_static_pages"
+  end
+
+  it "should have the right links on the layout" do
+    visit root_path
+    click_link "About"
+    expect(page).to have_title(full_title('About me'))
+    click_link "Help"
+    expect(page).to have_title(full_title('Help'))
+    click_link "Contact"
+    expect(page).to have_title(full_title('Contact'))
+    click_link "sample app"
+    expect(page).to have_title(full_title(''))
+    click_link "Sign up now!"
+    expect(page).to have_title(full_title('Sign up'))
   end
 end
